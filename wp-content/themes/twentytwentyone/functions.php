@@ -30,7 +30,7 @@ define('POST_TYPE', 'post');
 define('POST_TYPE_PAGE', 'page');
 define('VERSION', '1.0.0');
 define('EXCERPT_LENGTH', 40);
-define('API_NAME', 'lk_tech');
+define('API_NAME', 'movie');
 define('KEY_SUMMARY', 'post_summary');
 define('KEY_TEMPLATE_SERVICE', 'post_template_service');
 
@@ -50,7 +50,7 @@ require_once(TEMPLATEPATH . '/vendor/alexis-magina/cmb2-field-post-search-ajax/c
 require_once(TEMPLATEPATH . '/vendor/webdevstudios/cmb2-attached-posts/cmb2-attached-posts-field.php');
 require_once(TEMPLATEPATH . '/cores/core.php');
 require_once(TEMPLATEPATH . '/fields/page-setting-top.php');
-require_once(TEMPLATEPATH . '/fields/page-setting-about.php');
+// require_once(TEMPLATEPATH . '/fields/page-setting-about.php');
 
 require_once(TEMPLATEPATH . '/registerPage.php');
 
@@ -65,12 +65,12 @@ require_once(TEMPLATEPATH . '/fields/page-top-social-network.php');
 // page partner
 require_once(TEMPLATEPATH . '/fields/page-partner-slide.php');
 // page about
-require_once(TEMPLATEPATH . '/fields/page-about-slide.php');
-require_once(TEMPLATEPATH . '/fields/page-about-specical.php');
-require_once(TEMPLATEPATH . '/fields/page-about-philosophy-business.php');
-require_once(TEMPLATEPATH . '/fields/page-about-mission-business.php');
-require_once(TEMPLATEPATH . '/fields/page-about-service.php');
-require_once(TEMPLATEPATH . '/fields/page-about-technology_in_dochina.php');
+// require_once(TEMPLATEPATH . '/fields/page-about-slide.php');
+// require_once(TEMPLATEPATH . '/fields/page-about-specical.php');
+// require_once(TEMPLATEPATH . '/fields/page-about-philosophy-business.php');
+// require_once(TEMPLATEPATH . '/fields/page-about-mission-business.php');
+// require_once(TEMPLATEPATH . '/fields/page-about-service.php');
+// require_once(TEMPLATEPATH . '/fields/page-about-technology_in_dochina.php');
 
 //api 
 require_once(TEMPLATEPATH . '/api/PostController.php');
@@ -99,13 +99,13 @@ function add_css_js_version( ) {
     return $verDate;
 }
 
-if (isset($_GET['post']) && $_GET['post'] == get_option('top_id',true)) {
-    require_once(TEMPLATEPATH . '/styleTop.php');
-}
+// if (isset($_GET['post']) && $_GET['post'] == get_option('top_id',true)) {
+//     require_once(TEMPLATEPATH . '/styleTop.php');
+// }
 
-if (isset($_GET['post']) && $_GET['post'] == get_option('about_id',true)) {
-    require_once(TEMPLATEPATH . '/styleAbout.php');
-}
+// if (isset($_GET['post']) && $_GET['post'] == get_option('about_id',true)) {
+//     require_once(TEMPLATEPATH . '/styleAbout.php');
+// }
 if ( version_compare( $GLOBALS['wp_version'], '5.3', '<' ) ) {
 	require get_template_directory() . '/inc/back-compat.php';
 }

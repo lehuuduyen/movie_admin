@@ -4,7 +4,7 @@ function postTemplateService()
 {
     $metaBox = new_cmb2_box([
         'id' => KEY_TEMPLATE_SERVICE . '_box',
-        'title' => 'Template service',
+        'title' => 'Video',
         'object_types' => POST_TYPE,
         'context' => 'normal',
         'priority' => 'default',
@@ -12,16 +12,39 @@ function postTemplateService()
         
     ]);
     $metaBox->add_field( array(
-        'name' => 'Template service',
-        'id' => KEY_TEMPLATE_SERVICE . '_id',
-        'type' => 'select',
-        'default'          => 'template1',
-        'options'          => array(
-            '1' => __( 'Teamplate one', 'cmb2' ),
-            '2'   => __( 'Teamplate Two', 'cmb2' ),
-            '3'     => __( 'Teamplate Three', 'cmb2' ),
-        ),
+        'name' => 'Link video',
+        'id' => KEY_TEMPLATE_SERVICE . '_link',
+        'type' => 'text',
+        'attributes' => array(
+            'data-cmb2-qtranslate' => true,
+            'class' => 'form-control'
+        )
     ));
+    $metaBox->add_field( array(
+        'name'    => 'File',
+        // 'desc'    => 'Upload an image or enter an URL.',
+        'id'      => KEY_TEMPLATE_SERVICE . '_file',
+        'type'    => 'file',
+        // Optional:
+        'options' => array(
+            'url' => false, // Hide the text input for the url
+        ),
+        'text'    => array(
+            'add_upload_file_text' => 'Add File' // Change upload button text. Default: "Add or Upload File"
+        ),
+        // query_args are passed to wp.media's library query.
+        'query_args' => array(
+            // 'type' => 'application/pdf', // Make library only display PDFs.
+            // Or only allow gif, jpg, or png images
+            'type' => array(
+                'image/gif',
+                'image/jpeg',
+                'image/png',
+                'playlist.m3u8'
+            ),
+        ),
+        'preview_size' => 'large', // Image size to use when previewing in the admin.
+    ) );
     
 }
 
