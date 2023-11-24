@@ -123,8 +123,8 @@ class PostController extends WP_REST_Controller
                 $results['data'] = [
                     'title' => $getTitle,
                     'slug' => get_post_field('post_name', get_the_ID()),
-                    'template' => (int)get_post_meta(get_the_ID(), KEY_TEMPLATE_SERVICE . '_id', true),
-                    'content' => get_the_content(),
+                    'content' => get_the_content() ,
+                    'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY , true),
                     'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
                     'date' => get_the_date('Y/m/d'),
                 ];
@@ -178,6 +178,8 @@ class PostController extends WP_REST_Controller
                 $results['data'][$key] = [
                     'title' => $getTitle,
                     'slug' => get_post_field('post_name', get_the_ID()),
+                    'content' => get_the_content() ,
+                    'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY , true),
                     'link_video' =>  get_post_meta(get_the_ID(), KEY_TEMPLATE_SERVICE . '_link', true),
                     'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
                     'slug_category' => (!empty($category_detail)) ? $category_detail[0]->slug : "",
@@ -218,7 +220,6 @@ class PostController extends WP_REST_Controller
             'post_type' => POST_TYPE,
             'post_status' => array('publish'),
             'order' => 'DESC',
-            'category_name' => 'project',
             's' => $search,
             'posts_per_page' => $postPerPage,
             'paged' => $page,
@@ -243,7 +244,8 @@ class PostController extends WP_REST_Controller
                 $results['data'][$key] = [
                     'title' => $getTitle,
                     'slug' => get_post_field('post_name', get_the_ID()),
-                    'location' =>  get_post_meta(get_the_ID(), KEY_SUMMARY . '_location', true),
+                    'content' => get_the_content() ,
+                    'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY , true),
                     'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
                     'slug_category' => (!empty($category_detail)) ? $category_detail[0]->slug : "",
                     'date' => get_the_date('Y/m/d')
