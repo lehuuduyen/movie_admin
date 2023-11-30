@@ -130,8 +130,10 @@ class PostController extends WP_REST_Controller
                     'slug' => get_post_field('post_name', get_the_ID()),
                     'content' => get_the_content() ,
                     'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY , true),
+                    'link_video' =>  get_post_meta(get_the_ID(), KEY_TEMPLATE_SERVICE . '_link', true),
                     'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
-                    'date' => get_the_date('Y/m/d'),
+                    'slug_category' => (!empty($category_detail)) ? $category_detail[0]->slug : "",
+                     'date' => get_the_date('Y/m/d'),
                 ];
 
                 $images = (is_array($listImage)) ? array_values($listImage) : [];
@@ -255,6 +257,7 @@ class PostController extends WP_REST_Controller
                     'slug' => get_post_field('post_name', get_the_ID()),
                     'content' => get_the_content() ,
                     'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY , true),
+                    'link_video' =>  get_post_meta(get_the_ID(), KEY_TEMPLATE_SERVICE . '_link', true),
                     'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
                     'slug_category' => (!empty($category_detail)) ? $category_detail[0]->slug : "",
                     'date' => get_the_date('Y/m/d')
