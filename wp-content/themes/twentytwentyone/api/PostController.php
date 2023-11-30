@@ -85,9 +85,9 @@ class PostController extends WP_REST_Controller
             'taxonomy' => 'category',
             'parent' => 0,
         ]);
-        
 
-        return new WP_REST_Response($categories, 200); ;
+
+        return new WP_REST_Response($categories, 200);;
     }
     public function getSubCategory($request)
     {
@@ -96,15 +96,10 @@ class PostController extends WP_REST_Controller
             'taxonomy' => 'category',
             'childless' => true
         ]);
-        
-
-        return new WP_REST_Response($subCategories, 200); ;
+        return new WP_REST_Response($subCategories, 200);;
     }
     public function getPost($request)
     {
-
-
-
         $results = [];
         $args = array(
             'post_type' => POST_TYPE,
@@ -119,19 +114,58 @@ class PostController extends WP_REST_Controller
             $results['code'] = 'success';
             while ($posts->have_posts()) {
                 $posts->the_post();
+                $categories = get_the_category(get_the_ID());
+                if ($categories) {
+                    // Get the first category (assuming a post is assigned to only one category)
+                    $listcate = [];
+                    foreach ($categories as $value) {
+                        $listcate[] = $value->term_id;
+                    }
+                  
+                    
+
+                    // Query for posts in the same category
+                    $args = array(
+                        'category__in' => $listcate,
+                        'post__not_in' => array(get_the_ID()), // Exclude the post with ID 1
+                        'posts_per_page' => 8, // Retrieve all posts in the category
+                    );
+
+                    $related_posts = new WP_Query($args);
+                    $temp = [];
+                    // Loop through the related posts
+                    if ($related_posts->have_posts()) {
+                        while ($related_posts->have_posts()) {
+                            $related_posts->the_post();
+                            $temp[] = [
+                                'title' =>  get_the_title(),
+                                'slug' => get_post_field('post_name', get_the_ID()),
+                                'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY, true),
+                                'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
+                                'date' => get_the_date('Y/m/d'),
+                            ];
+                        }
+                        wp_reset_postdata(); // Reset post data to the main query
+                    } else {
+                        // No related posts found
+                        echo 'No related posts found.';
+                    }
+                }
                 $getTitle =  get_the_title();
+
                 $listImage = get_post_meta(get_the_ID(), KEY_LIST_IMAGES . '_list', true);
 
                 //Get content without caption
                 $results['data'] = [
                     'title' => $getTitle,
                     'slug' => get_post_field('post_name', get_the_ID()),
-                    'content' => get_the_content() ,
-                    'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY , true),
+                    'content' => get_the_content(),
+                    'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY, true),
                     'link_video' =>  get_post_meta(get_the_ID(), KEY_TEMPLATE_SERVICE . '_link', true),
                     'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
-                    'slug_category' => (!empty($category_detail)) ? $category_detail[0]->slug : "",
-                     'date' => get_the_date('Y/m/d'),
+                    'category' => (!empty($$categories)) ? $$categories : "",
+                    'related' => $temp,
+                    'date' => get_the_date('Y/m/d'),
                 ];
 
                 $images = (is_array($listImage)) ? array_values($listImage) : [];
@@ -142,9 +176,9 @@ class PostController extends WP_REST_Controller
         } else {
             return new WP_Error('no_posts', __('No post found'), array('status' => 404));
         }
-        
 
-        return new WP_REST_Response($results, 200); ;
+
+        return new WP_REST_Response($results, 200);;
     }
     public function getPostCategory($request)
     {
@@ -185,8 +219,8 @@ class PostController extends WP_REST_Controller
                 $results['data'][$key] = [
                     'title' => $getTitle,
                     'slug' => get_post_field('post_name', get_the_ID()),
-                    'content' => get_the_content() ,
-                    'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY , true),
+                    'content' => get_the_content(),
+                    'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY, true),
                     'link_video' =>  get_post_meta(get_the_ID(), KEY_TEMPLATE_SERVICE . '_link', true),
                     'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
                     'slug_category' => (!empty($category_detail)) ? $category_detail[0]->slug : "",
@@ -201,7 +235,7 @@ class PostController extends WP_REST_Controller
                 'total' => (int)$posts->found_posts,
                 'post_per_page' => $postPerPage,
             ];
-            
+
             return new WP_REST_Response($results, 200);
         } else {
             return new WP_Error('no_posts', __('No post found'), array('status' => 404));
@@ -251,8 +285,8 @@ class PostController extends WP_REST_Controller
                 $results['data'][$key] = [
                     'title' => $getTitle,
                     'slug' => get_post_field('post_name', get_the_ID()),
-                    'content' => get_the_content() ,
-                    'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY , true),
+                    'content' => get_the_content(),
+                    'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY, true),
                     'link_video' =>  get_post_meta(get_the_ID(), KEY_TEMPLATE_SERVICE . '_link', true),
                     'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
                     'slug_category' => (!empty($category_detail)) ? $category_detail[0]->slug : "",
@@ -270,7 +304,7 @@ class PostController extends WP_REST_Controller
             ];
             wp_reset_postdata();
 
-            return new WP_REST_Response($results, 200); ;
+            return new WP_REST_Response($results, 200);;
         } else {
             return new WP_Error('no_posts', __('No post found'), array('status' => 404));
         }
