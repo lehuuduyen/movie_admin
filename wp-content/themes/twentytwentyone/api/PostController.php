@@ -142,36 +142,32 @@ class PostController extends WP_REST_Controller
             'name' => $request['post_slug']
 
         );
-        $posts = new WP_Query($args);
 
-
-        if ($posts->have_posts()) {
+        $post = get_page_by_path($request['post_slug'], OBJECT, POST_TYPE);
+        if ($post) {
             $results['code'] = 'success';
-            while ($posts->have_posts()) {
-                $posts->the_post();
-                $categories = get_the_category(get_the_ID());
-                $related = $this->relatedCategory($categories);
+            $categories = get_the_category($post->ID);
+            $related = $this->relatedCategory($categories);
 
-                $getTitle =  get_the_title();
+            $getTitle =  $post->post_title;
 
-                $listImage = get_post_meta(get_the_ID(), KEY_LIST_IMAGES . '_list', true);
+            $listImage = get_post_meta($post->ID, KEY_LIST_IMAGES . '_list', true);
 
-                //Get content without caption
-                $results['data'] = [
-                    'title' => $getTitle,
-                    'slug' => get_post_field('post_name', get_the_ID()),
-                    'content' => get_the_content(),
-                    'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY, true),
-                    'link_video' =>  get_post_meta(get_the_ID(), KEY_TEMPLATE_SERVICE . '_link', true),
-                    'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
-                    'category' => (isset($related['list_cate_name'])) ? implode(', ', $related['list_cate_name']) : "",
-                    'related' => $related['related'],
-                    'date' => get_the_date('Y/m/d'),
-                ];
+            //Get content without caption
+            $results['data'] = [
+                'title' => $getTitle,
+                'slug' => get_post_field('post_name', $post->ID),
+                'content' => $post->post_content,
+                'short_description' =>  get_post_meta($post->ID, KEY_SUMMARY, true),
+                'link_video' =>  get_post_meta($post->ID, KEY_TEMPLATE_SERVICE . '_link', true),
+                'thumbnail' => has_post_thumbnail($post->ID) ? get_the_post_thumbnail_url($post->ID) : '',
+                'category' => (isset($related['list_cate_name'])) ? implode(', ', $related['list_cate_name']) : "",
+                'related' => $related['related'],
+                'date' => get_the_date('Y/m/d'),
+            ];
 
-                $images = (is_array($listImage)) ? array_values($listImage) : [];
-                $results['data']['images'] = $images;
-            }
+            $images = (is_array($listImage)) ? array_values($listImage) : [];
+            $results['data']['images'] = $images;
 
             wp_reset_postdata();
         } else {
