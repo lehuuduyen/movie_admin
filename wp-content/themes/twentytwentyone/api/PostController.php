@@ -109,21 +109,20 @@ class PostController extends WP_REST_Controller
         );
         $posts = new WP_Query($args);
 
+        $listNameCate = [];
 
         if ($posts->have_posts()) {
             $results['code'] = 'success';
             while ($posts->have_posts()) {
                 $posts->the_post();
                 $categories = get_the_category(get_the_ID());
+
                 if ($categories) {
                     // Get the first category (assuming a post is assigned to only one category)
-                    $listcate = [];
                     foreach ($categories as $value) {
                         $listcate[] = $value->term_id;
+                        $listNameCate[]= $value->name;
                     }
-                  
-                    
-
                     // Query for posts in the same category
                     $args = array(
                         'category__in' => $listcate,
@@ -163,7 +162,7 @@ class PostController extends WP_REST_Controller
                     'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY, true),
                     'link_video' =>  get_post_meta(get_the_ID(), KEY_TEMPLATE_SERVICE . '_link', true),
                     'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
-                    'category' => (!empty($$categories)) ? $$categories : "",
+                    'category' => (!empty($listNameCate)) ? implode(', ',$listNameCate) : "",
                     'related' => $temp,
                     'date' => get_the_date('Y/m/d'),
                 ];
