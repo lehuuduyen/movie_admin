@@ -85,10 +85,9 @@ class PostController extends WP_REST_Controller
             'taxonomy' => 'category',
             'parent' => 0,
         ]);
-        $res  =new WP_REST_Response($categories, 200);
-          $res->set_headers(array('Cache-Control' => 'max-age=3600'));
+        
 
-        return $res ;
+        return new WP_REST_Response($categories, 200); ;
     }
     public function getSubCategory($request)
     {
@@ -97,10 +96,9 @@ class PostController extends WP_REST_Controller
             'taxonomy' => 'category',
             'childless' => true
         ]);
-        $res  =new WP_REST_Response($subCategories, 200);
-        $res->set_headers(array('Cache-Control' => 'max-age=3600'));
+        
 
-        return $res ;
+        return new WP_REST_Response($subCategories, 200); ;
     }
     public function getPost($request)
     {
@@ -144,10 +142,9 @@ class PostController extends WP_REST_Controller
         } else {
             return new WP_Error('no_posts', __('No post found'), array('status' => 404));
         }
-        $res  =new WP_REST_Response($results, 200);
-        $res->set_headers(array('Cache-Control' => 'max-age=3600'));
+        
 
-        return $res ;
+        return new WP_REST_Response($results, 200); ;
     }
     public function getPostCategory($request)
     {
@@ -204,9 +201,8 @@ class PostController extends WP_REST_Controller
                 'total' => (int)$posts->found_posts,
                 'post_per_page' => $postPerPage,
             ];
-            $res  =new WP_REST_Response($results, 200);
-              $res->set_headers(array('Cache-Control' => 'max-age=3600'));
-            return $res ;
+            
+            return new WP_REST_Response($results, 200);
         } else {
             return new WP_Error('no_posts', __('No post found'), array('status' => 404));
         }
@@ -274,10 +270,7 @@ class PostController extends WP_REST_Controller
             ];
             wp_reset_postdata();
 
-            $res  =new WP_REST_Response($results, 200);
-              $res->set_headers(array('Cache-Control' => 'max-age=3600'));
-
-            return $res ;
+            return new WP_REST_Response($results, 200); ;
         } else {
             return new WP_Error('no_posts', __('No post found'), array('status' => 404));
         }
