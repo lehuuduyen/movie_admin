@@ -98,6 +98,41 @@ class PostController extends WP_REST_Controller
         ]);
         return new WP_REST_Response($subCategories, 200);;
     }
+    public function relatedCategory($categories)
+    {
+        // Get the first category (assuming a post is assigned to only one category)
+        $result = [];
+        if ($categories) {
+            foreach ($categories as $value) {
+                $list_cate_id[] = $value->term_id;
+                $result['list_cate_name'][] = $value->name;
+            }
+            // Query for posts in the same category
+            $args = array(
+                'category__in' => $list_cate_id,
+                'post__not_in' => array(get_the_ID()), // Exclude the post with ID 1
+                'posts_per_page' => 8, // Retrieve all posts in the category
+            );
+
+            $related_posts = new WP_Query($args);
+            $temp = [];
+            // Loop through the related posts
+            if ($related_posts->have_posts()) {
+                while ($related_posts->have_posts()) {
+                    $related_posts->the_post();
+                    $result['related'][] = [
+                        'title' =>  get_the_title(),
+                        'slug' => get_post_field('post_name', get_the_ID()),
+                        'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY, true),
+                        'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
+                        'date' => get_the_date('Y/m/d'),
+                    ];
+                }
+                wp_reset_postdata(); // Reset post data to the main query
+            }
+        }
+        return $result;
+    }
     public function getPost($request)
     {
         $results = [];
@@ -109,47 +144,14 @@ class PostController extends WP_REST_Controller
         );
         $posts = new WP_Query($args);
 
-        $listNameCate = [];
 
         if ($posts->have_posts()) {
             $results['code'] = 'success';
             while ($posts->have_posts()) {
                 $posts->the_post();
                 $categories = get_the_category(get_the_ID());
+                $related = $this->relatedCategory($categories);
 
-                if ($categories) {
-                    // Get the first category (assuming a post is assigned to only one category)
-                    foreach ($categories as $value) {
-                        $listcate[] = $value->term_id;
-                        $listNameCate[]= $value->name;
-                    }
-                    // Query for posts in the same category
-                    $args = array(
-                        'category__in' => $listcate,
-                        'post__not_in' => array(get_the_ID()), // Exclude the post with ID 1
-                        'posts_per_page' => 8, // Retrieve all posts in the category
-                    );
-
-                    $related_posts = new WP_Query($args);
-                    $temp = [];
-                    // Loop through the related posts
-                    if ($related_posts->have_posts()) {
-                        while ($related_posts->have_posts()) {
-                            $related_posts->the_post();
-                            $temp[] = [
-                                'title' =>  get_the_title(),
-                                'slug' => get_post_field('post_name', get_the_ID()),
-                                'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY, true),
-                                'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
-                                'date' => get_the_date('Y/m/d'),
-                            ];
-                        }
-                        wp_reset_postdata(); // Reset post data to the main query
-                    } else {
-                        // No related posts found
-                        echo 'No related posts found.';
-                    }
-                }
                 $getTitle =  get_the_title();
 
                 $listImage = get_post_meta(get_the_ID(), KEY_LIST_IMAGES . '_list', true);
@@ -162,8 +164,8 @@ class PostController extends WP_REST_Controller
                     'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY, true),
                     'link_video' =>  get_post_meta(get_the_ID(), KEY_TEMPLATE_SERVICE . '_link', true),
                     'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
-                    'category' => (!empty($listNameCate)) ? implode(', ',$listNameCate) : "",
-                    'related' => $temp,
+                    'category' => (isset($related['list_cate_name'])) ? implode(', ', $related['list_cate_name']) : "",
+                    'related' => $related['related'],
                     'date' => get_the_date('Y/m/d'),
                 ];
 
