@@ -75,8 +75,7 @@ class PostController extends WP_REST_Controller
 
     //     $results['code'] = 'success';
     //     $results['data'] = new stdClass;
-
-    //     return new WP_REST_Response($results, 200);
+    //     $res return ;
     // }
     public function getCategory($request)
     {
@@ -86,7 +85,10 @@ class PostController extends WP_REST_Controller
             'taxonomy' => 'category',
             'parent' => 0,
         ]);
-        return new WP_REST_Response($categories, 200);
+        $res  =new WP_REST_Response($categories, 200);
+          $res->set_headers(array('Cache-Control' => 'max-age=3600'));
+
+        return $res ;
     }
     public function getSubCategory($request)
     {
@@ -95,7 +97,10 @@ class PostController extends WP_REST_Controller
             'taxonomy' => 'category',
             'childless' => true
         ]);
-        return new WP_REST_Response($subCategories, 200);
+        $res  =new WP_REST_Response($subCategories, 200);
+        $res->set_headers(array('Cache-Control' => 'max-age=3600'));
+
+        return $res ;
     }
     public function getPost($request)
     {
@@ -137,7 +142,10 @@ class PostController extends WP_REST_Controller
         } else {
             return new WP_Error('no_posts', __('No post found'), array('status' => 404));
         }
-        return new WP_REST_Response($results, 200);
+        $res  =new WP_REST_Response($results, 200);
+        $res->set_headers(array('Cache-Control' => 'max-age=3600'));
+
+        return $res ;
     }
     public function getPostCategory($request)
     {
@@ -194,8 +202,9 @@ class PostController extends WP_REST_Controller
                 'total' => (int)$posts->found_posts,
                 'post_per_page' => $postPerPage,
             ];
-            wp_reset_postdata();
-            return new WP_REST_Response($results, 200);
+            $res  =new WP_REST_Response($results, 200);
+              $res->set_headers(array('Cache-Control' => 'max-age=3600'));
+            return $res ;
         } else {
             return new WP_Error('no_posts', __('No post found'), array('status' => 404));
         }
@@ -262,7 +271,10 @@ class PostController extends WP_REST_Controller
             ];
             wp_reset_postdata();
 
-            return new WP_REST_Response($results, 200);
+            $res  =new WP_REST_Response($results, 200);
+              $res->set_headers(array('Cache-Control' => 'max-age=3600'));
+
+            return $res ;
         } else {
             return new WP_Error('no_posts', __('No post found'), array('status' => 404));
         }
