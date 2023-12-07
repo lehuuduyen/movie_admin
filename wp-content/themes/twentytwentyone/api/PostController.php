@@ -124,7 +124,7 @@ class PostController extends WP_REST_Controller
                         'title' =>  get_the_title(),
                         'slug' => get_post_field('post_name', get_the_ID()),
                         'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY, true),
-                        'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
+                        'thumbnailUrl' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
                         'date' => get_the_date('Y/m/d'),
                     ];
                 }
@@ -160,7 +160,7 @@ class PostController extends WP_REST_Controller
                 'content' => $post->post_content,
                 'short_description' =>  get_post_meta($post->ID, KEY_SUMMARY, true),
                 'link_video' =>  get_post_meta($post->ID, KEY_TEMPLATE_SERVICE . '_link', true),
-                'thumbnail' => has_post_thumbnail($post->ID) ? get_the_post_thumbnail_url($post->ID) : '',
+                'thumbnailUrl' => has_post_thumbnail($post->ID) ? get_the_post_thumbnail_url($post->ID) : '',
                 'category' => (isset($related['list_cate_name'])) ? implode(', ', $related['list_cate_name']) : "",
                 'related' => $related['related'],
                 'date' => get_the_date('Y/m/d'),
@@ -219,7 +219,7 @@ class PostController extends WP_REST_Controller
                     'content' => get_the_content(),
                     'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY, true),
                     'link_video' =>  get_post_meta(get_the_ID(), KEY_TEMPLATE_SERVICE . '_link', true),
-                    'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
+                    'thumbnailUrl' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
                     'slug_category' => (!empty($category_detail)) ? $category_detail[0]->slug : "",
                     'date' => get_the_date('Y/m/d')
                 ];
@@ -285,7 +285,7 @@ class PostController extends WP_REST_Controller
                     'content' => get_the_content(),
                     'short_description' =>  get_post_meta(get_the_ID(), KEY_SUMMARY, true),
                     'link_video' =>  get_post_meta(get_the_ID(), KEY_TEMPLATE_SERVICE . '_link', true),
-                    'thumbnail' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
+                    'thumbnailUrl' => has_post_thumbnail() ? get_the_post_thumbnail_url() : '',
                     'slug_category' => (!empty($category_detail)) ? $category_detail[0]->slug : "",
                     'date' => get_the_date('Y/m/d')
 
